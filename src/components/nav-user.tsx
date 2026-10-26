@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-  User,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -27,6 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
+import { DashboardThemeToggle } from "@/components/dashboard-theme-toggle";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -97,6 +90,7 @@ export function NavUser({
                   Profile
                 </Link>
               </DropdownMenuItem>
+              <DashboardThemeToggle isMobile={isMobile} />
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
