@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import Script from "next/script";
+import { NextTopLoader } from "@/components/top-loader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,6 +62,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <NextTopLoader
+            color="var(--primary)"
+            height={3}
+            showSpinner={false}
+          />
           {children}
           <Toaster />
         </ThemeProvider>
