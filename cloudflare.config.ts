@@ -1,5 +1,9 @@
 import { bindings, defineConfig, defineWorker } from "cf/config";
 import { createWorkersCacheConfig } from "@vinext/cloudflare/cache/config";
+import dotenv from "dotenv";
+
+dotenv.config();
+dotenv.config({ path: ".dev.vars" });
 
 const workersCache = await createWorkersCacheConfig();
 
@@ -49,6 +53,9 @@ export default defineConfig({
       ...workersCache.env,
       HYPERDRIVE: bindings.hyperdrive({
         id: "5e1b40758fc8454cb612db669d95b0b4",
+        dev: {
+          connectionString: process.env.DATABASE_URL,
+        },
       }),
       BETTER_AUTH_SECRET: bindings.secret(),
       BETTER_AUTH_URL: bindings.secret(),
