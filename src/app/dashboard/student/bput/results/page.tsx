@@ -204,6 +204,7 @@ export default function Results() {
 
           options.sort((a, b) => parseInt(a.value, 10) - parseInt(b.value, 10));
           setSemesterOptions(options);
+          setSemId(options[0].value);
         } else {
           setSemesterOptions(ALL_SEMESTER_OPTIONS);
         }
