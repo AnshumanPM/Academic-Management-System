@@ -13,7 +13,7 @@ export function verifyEmail(props: VerifyEmailProps): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verify your email</title>
 </head>
-<body style="background-color: #f3f4f6; padding: 40px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0;">
+<body style="background-color: #f3f4f6; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
   <div style="background-color: #ffffff; max-width: 600px; margin: 0 auto; border-radius: 8px; padding: 32px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
     <div style="margin-bottom: 32px; text-align: center;">
       <h1 style="margin: 0 0 8px; font-size: 28px; font-weight: 700; color: #111827;">
@@ -60,7 +60,7 @@ export function verifyEmail(props: VerifyEmailProps): string {
       </p>
     </div>
 
-    <div style="margin-bottom: 24px;">
+    <div>
       <p style="margin: 0; font-size: 14px; line-height: 20px; color: #4b5563;">
         Need help? Contact our support team at
         <a href="mailto:admin@anshumanpm.in" style="color: #374151;">
