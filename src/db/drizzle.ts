@@ -3,30 +3,34 @@ import * as schema from "@/db/auth-schema";
 import { env } from "cloudflare:workers";
 import { Pool } from "pg";
 
-let _db: ReturnType<typeof drizzle> | null = null;
-let _pool: Pool | null = null;
+function getConnectionString() {
+  return (
+    env?.HYPERDRIVE?.connectionString ??
+    env?.DATABASE_URL ??
+    process.env.DATABASE_URL!
+  );
+}
+
+function createPool() {
+  const pool = new Pool({
+    connectionString: getConnectionString(),
+    max: 1,
+    maxUses: 1,
+    idleTimeoutMillis: 1000,
+    connectionTimeoutMillis: 5000,
+    keepAlive: false,
+  });
+
+  pool.on("error", (err) => {
+    console.error("PG pool background error:", err);
+  });
+
+  return pool;
+}
 
 export function getDb() {
-  if (!_db) {
-    const connectionString =
-      env?.HYPERDRIVE?.connectionString ??
-      env?.DATABASE_URL ??
-      process.env.DATABASE_URL!;
-
-    _pool = new Pool({
-      connectionString,
-      max: 10,
-      maxUses: 1,
-      connectionTimeoutMillis: 5000,
-    });
-
-    _pool.on("error", (err) => {
-      console.error("PG pool background error:", err);
-    });
-
-    _db = drizzle(_pool, { schema });
-  }
-  return _db;
+  const pool = createPool();
+  return drizzle(pool, { schema });
 }
 
 export const db = new Proxy({} as ReturnType<typeof drizzle>, {
