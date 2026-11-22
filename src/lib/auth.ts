@@ -9,22 +9,17 @@ import {
 } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { createAuthMiddleware, APIError } from "better-auth/api";
-import { Resend } from "resend";
-import { render } from "react-email";
 import ForgotPasswordEmail from "@/components/emails/reset-password";
 import VerifyEmail from "@/components/emails/verify-email";
 import { db } from "@/db/drizzle";
 import * as schema from "@/db/auth-schema";
 import { ac, roleObjects, ROLES } from "@/lib/permissions";
-import { sendTelegramMessage } from "@/lib/helper";
+import { sendTelegramMessage, sendEmail } from "@/lib/helper";
 import { env } from "cloudflare:workers";
 
 function createAuth() {
   const secret = env?.BETTER_AUTH_SECRET ?? process.env.BETTER_AUTH_SECRET;
   const baseURL = env?.BETTER_AUTH_URL ?? process.env.BETTER_AUTH_URL;
-  const resendApiKey =
-    env?.RESEND_API_KEY ?? process.env.RESEND_API_KEY ?? "re_dummy";
-  const resend = new Resend(resendApiKey);
 
   return betterAuth({
     secret,
@@ -34,19 +29,12 @@ function createAuth() {
       requireEmailVerification: true,
       sendResetPassword: async ({ user, url }) => {
         console.log("Reset password URL:", url);
-        const emailSenderName =
-          env?.EMAIL_SENDER_NAME ?? process.env.EMAIL_SENDER_NAME;
-        const emailSenderAddress =
-          env?.EMAIL_SENDER_ADDRESS ?? process.env.EMAIL_SENDER_ADDRESS;
-        const html = await render(
-          ForgotPasswordEmail({
-            username: user.name,
-            resetUrl: url,
-            userEmail: user.email,
-          }),
-        );
-        await resend.emails.send({
-          from: `${emailSenderName} <${emailSenderAddress}>`,
+        const html = ForgotPasswordEmail({
+          username: user.name,
+          resetUrl: url,
+          userEmail: user.email,
+        });
+        await sendEmail({
           to: user.email,
           subject: "Reset your password",
           html,
@@ -56,15 +44,8 @@ function createAuth() {
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
         console.log("Verify email URL:", url);
-        const emailSenderName =
-          env?.EMAIL_SENDER_NAME ?? process.env.EMAIL_SENDER_NAME;
-        const emailSenderAddress =
-          env?.EMAIL_SENDER_ADDRESS ?? process.env.EMAIL_SENDER_ADDRESS;
-        const html = await render(
-          VerifyEmail({ username: user.name, verifyUrl: url }),
-        );
-        await resend.emails.send({
-          from: `${emailSenderName} <${emailSenderAddress}>`,
+        const html = VerifyEmail({ username: user.name, verifyUrl: url });
+        await sendEmail({
           to: user.email,
           subject: "Verify your email",
           html,
