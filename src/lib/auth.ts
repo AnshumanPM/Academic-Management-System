@@ -10,6 +10,7 @@ import {
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 import { Resend } from "resend";
+import { render } from "react-email";
 import ForgotPasswordEmail from "@/components/emails/reset-password";
 import VerifyEmail from "@/components/emails/verify-email";
 import { db } from "@/db/drizzle";
@@ -37,15 +38,18 @@ function createAuth() {
           env?.EMAIL_SENDER_NAME ?? process.env.EMAIL_SENDER_NAME;
         const emailSenderAddress =
           env?.EMAIL_SENDER_ADDRESS ?? process.env.EMAIL_SENDER_ADDRESS;
-        await resend.emails.send({
-          from: `${emailSenderName} <${emailSenderAddress}>`,
-          to: user.email,
-          subject: "Reset your password",
-          react: ForgotPasswordEmail({
+        const html = await render(
+          ForgotPasswordEmail({
             username: user.name,
             resetUrl: url,
             userEmail: user.email,
           }),
+        );
+        await resend.emails.send({
+          from: `${emailSenderName} <${emailSenderAddress}>`,
+          to: user.email,
+          subject: "Reset your password",
+          html,
         });
       },
     },
@@ -56,11 +60,14 @@ function createAuth() {
           env?.EMAIL_SENDER_NAME ?? process.env.EMAIL_SENDER_NAME;
         const emailSenderAddress =
           env?.EMAIL_SENDER_ADDRESS ?? process.env.EMAIL_SENDER_ADDRESS;
+        const html = await render(
+          VerifyEmail({ username: user.name, verifyUrl: url }),
+        );
         await resend.emails.send({
           from: `${emailSenderName} <${emailSenderAddress}>`,
           to: user.email,
           subject: "Verify your email",
-          react: VerifyEmail({ username: user.name, verifyUrl: url }),
+          html,
         });
       },
       sendOnSignUp: true,
