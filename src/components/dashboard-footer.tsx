@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function DashboardFooter() {
   return (
-    <footer className="w-full">
+    <footer className="w-full print:hidden">
       <Separator />
       <div className="text-muted-foreground flex justify-center py-4 text-sm">
         <p>
