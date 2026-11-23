@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Sparkles, ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { X, Sparkles, ExternalLink, Coffee } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 const STORAGE_KEY = "ams-ai-announcement-dismissed";
 
-export default function AnnouncementBar() {
+export function AmsAiBar() {
   const [visible, setVisible] = useState(false);
   const [leaving, setLeaving] = useState(false);
 
@@ -30,15 +31,14 @@ export default function AnnouncementBar() {
   return (
     <div
       className={[
-        "bg-primary border-primary-foreground/10 flex w-full items-center gap-2.5 border-b px-4 py-2 transition-all duration-300 ease-in-out",
+        "bg-primary border-primary-foreground/10 flex w-full items-center gap-2.5 border-b px-4 py-2 transition-all duration-300 ease-in-out print:hidden",
         leaving
           ? "max-h-0 -translate-y-full py-0 opacity-0"
           : "max-h-16 translate-y-0 opacity-100",
       ].join(" ")}
     >
-      <Sparkles size={14} className="text-primary-foreground/80 shrink-0" />
-
       <div className="flex min-w-0 flex-1 items-center gap-2">
+        <Sparkles size={14} className="text-primary-foreground/80 shrink-0" />
         <Badge
           variant="secondary"
           className="bg-primary-foreground/15 text-primary-foreground border-primary-foreground/25 hover:bg-primary-foreground/15 shrink-0 px-1.5 py-0 text-[10px] font-bold tracking-wider uppercase"
@@ -77,6 +77,47 @@ export default function AnnouncementBar() {
           <X size={13} />
         </Button>
       </div>
+    </div>
+  );
+}
+
+export function ChaiBar() {
+  return (
+    <div className="bg-amber-500/10 dark:bg-amber-500/15 border-amber-500/20 text-foreground flex w-full items-center justify-between gap-2.5 border-b px-4 py-2 print:hidden">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <Coffee size={14} className="text-amber-600 dark:text-amber-400 shrink-0" />
+        <Badge
+          variant="secondary"
+          className="bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-500/30 hover:bg-amber-500/20 shrink-0 px-1.5 py-0 text-[10px] font-bold tracking-wider uppercase"
+        >
+          Support
+        </Badge>
+        <p className="truncate text-xs font-medium">
+          Support the developer by buying a chai
+        </p>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-2">
+        <Button
+          asChild
+          size="sm"
+          className="bg-amber-600 hover:bg-amber-700 text-white h-7 gap-1.5 rounded-full px-3 text-xs font-semibold shadow-xs"
+        >
+          <Link href="/chai">
+            <Coffee size={11} />
+            Buy a chai
+          </Link>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default function AnnouncementBar() {
+  return (
+    <div className="flex w-full flex-col print:hidden">
+      <AmsAiBar />
+      <ChaiBar />
     </div>
   );
 }
